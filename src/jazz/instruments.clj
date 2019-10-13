@@ -1,6 +1,11 @@
 (ns jazz.instruments
   (:use [overtone.core]
+        [leipzig.live :only [play-note]]
         [overtone.samples.piano :only [index-buffer]]))
+
+(definst hat []
+  (let [buffer (load-sample (freesound-path 802))]
+    (play-buf 1 buffer :action FREE)))
 
 (definst piano
   [note 60 level 1 rate 1 loop? 0 duration 8
@@ -10,3 +15,11 @@
                      (line:kr 1 0 duration)
                      :action FREE)]
     (* env (scaled-play-buf 2 buf :rate rate :level level :loop loop? :action FREE))))
+
+(defmethod play-note :default
+  [{midi :pitch, seconds :duration}]
+  (piano midi :duration seconds))
+
+(defmethod play-note :beat
+  [_]
+  (hat))
