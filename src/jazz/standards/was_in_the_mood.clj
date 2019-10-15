@@ -53,8 +53,8 @@
     :setup (fn [] (stroke-weight 5))
     :draw  (fn []
              (let [current (now)
-                   hits-played (->> hits deref (filter #(< % current)))
-                   plinks-played (->> plinks deref (filter #(< (:time %) current)))]
+                   hits-played (deref hits)
+                   plinks-played (deref plinks)]
                (clear)
                (fill (color 135 4 55))
                (doseq [epoch hits-played]
