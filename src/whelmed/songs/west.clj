@@ -41,7 +41,7 @@
          [  3   4   3   2   4   3   2   -1])
        (after -1/2)))
 
-(def west-with-the-west-with-the 
+(def west-with-the-west-with-the
   (->> (after -1/2 (phrase [1/2] [3]))
        (then (times 4 (phrase [3/4 3/4 2/4] [4 3 2])))))
 
@@ -172,60 +172,65 @@
       (tempo (bpm 80))
       #_(with [{:time 0 :duration 0 :part ::vocals}]))))
 
+(def west
+
+  "I'll run away.
+  I'll get away.
+  But my heart will go west with the sun."
+
+  (let [
+        variation (->> theme (then spilling-theme)
+                       (with (->> (with beat backing bassline) (times 2))))
+        gym gymnopédie-one]
+    (->>
+      (with
+;       backing
+       bassline
+;       light-bass
+;       beat
+;       beat2
+;       flat-beat
+;       theme
+;       reply
+;       break
+        )
+        ;(times 2) (with gym)
+      (where :pitch (comp temperament/equal scale/A scale/minor))
+      (tempo (bpm 80)))))
+
+(comment
+  (->> west var live/jam)
+  (->> west-with-the-sun live/play)
+)
+
 ; Arrangement
 (defmethod live/play-note ::bass
   [{freq :pitch left? :left?}]
   (let [[position low] (if left? [-1/3 0.3] [1/5 2])]
-    (some-> freq (groan :volume 0.5 :position position :wet 0.3 :low low :limit 3000))))
+    (-> freq (groan :volume 0.5 :position position :wet 0.3 :low low :limit 3000))))
 
 (defmethod live/play-note ::accompaniment
   [{freq :pitch left? :left?}]
-  (some-> freq (shudder :volume 1 :pan (if left? 1/2 -1/2) :wet 0.8 :limit 6000)))
+  (-> freq (shudder :volume 1 :pan (if left? 1/2 -1/2) :wet 0.8 :limit 6000)))
 
 (defmethod live/play-note ::lead
   [{freq :pitch}]
-  (some-> freq (sawish :pan -1/6 :vibrato 8/3 :wet 0.6 :volume 0.7)))
+  (-> freq (sawish :pan -1/6 :vibrato 8/3 :wet 0.6 :volume 0.7)))
 
 (defmethod live/play-note ::response
   [{freq :pitch seconds :duration}]
-  (some-> freq (organ seconds :vol 1.0 :pan -1/4 :wet 0.8))
-  (some-> freq (sing seconds :vol 0.02 :pan 1/4 :wet 0.9)))
+  (-> freq (organ seconds :vol 1.0 :pan -1/4 :wet 0.8))
+  (-> freq (sing seconds :vol 0.02 :pan 1/4 :wet 0.9)))
 
 (defmethod live/play-note ::epilogue
   [{freq :pitch seconds :duration}]
-  (some-> freq (corgan seconds :vol 0.4 :pan 1/2 :wet 0.5 :vibrato 80/60 :room 0.9)))
+  (-> freq (corgan seconds :vol 0.4 :pan 1/2 :wet 0.5 :vibrato 80/60 :room 0.9)))
 
 (defmethod live/play-note ::break
   [{freq :pitch}]
-  (some-> freq (/ 2) (bell :duration 7 :vol 0.5 :position -1/5 :wet 0.6))
-  (some-> freq (bell :duration 7 :vol 1.5 :position -1/6 :wet 0.6)))
+  (-> freq (/ 2) (bell :duration 7 :vol 0.5 :position -1/5 :wet 0.6))
+  (-> freq (bell :duration 7 :vol 1.5 :position -1/6 :wet 0.6)))
 
 (defmethod live/play-note ::kick
   [{freq :pitch}]
-  (some-> freq (kick2 :amp 0.4)))
-
-#_(overtone/defsynth treated-vocals []
-                (let [lead (overtone/load-sample "vocals/west-lead.wav" :start (int (* 44 1000 1.85)))
-                      harmony (overtone/load-sample "vocals/west-harmony.wav" :start (int (* 44 1000 1.85)))
-                      dry (+ (overtone/pan2 (overtone/play-buf 1 lead) 1/3)
-                             (* 0.5 (overtone/pan2 (overtone/play-buf 1 harmony) -1/3)))
-                      delayed (overtone/delay-c dry :delay-time 0.05)
-                      wet (overtone/free-verb (+ dry delayed) :mix 0.4 :room 0.9 :damp 1)]
-                  (overtone/out 0
-                                (-> (overtone/compander wet wet)
-                                    (* 10)
-                                    (overtone/lpf 3000)
-                                    (overtone/hpf 1000)
-                                    overtone/pan2))))
-
-#_(defmethod live/play-note ::vocals
-  [_]
-  (treated-vocals))
-
-(comment
-  (->> west-with-the-sun var live/jam)
-  (do
-    (overtone/recording-stop)
-    (overtone/recording-start "west-with-the-vocals2.wav")
-    (->> west-with-the-sun live/play))
-  )
+  (-> freq (kick2 :amp 0.4)))
