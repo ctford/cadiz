@@ -4,7 +4,6 @@
     [leipzig.live :as live]
     [leipzig.live :refer [stop]]
     [leipzig.temperament :as temperament]
-    [whelmed.melody :refer :all]
     [leipzig.scale :as scale]
     [leipzig.chord :as chord]
     [whelmed.instrument :refer :all]
