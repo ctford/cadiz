@@ -1,4 +1,4 @@
-(ns riFF.instruments
+(ns seven.instruments
   (:use [overtone.core]
         [overtone.samples.piano :only [index-buffer]]))
 

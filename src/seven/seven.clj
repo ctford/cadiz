@@ -1,4 +1,4 @@
-(ns riFF.riFF
+(ns seven.seven
   (:require [overtone.live :refer :all :exclude [stop sharp flat]]
             [leipzig.canon :refer [canon interval]]
             [leipzig.melody :refer :all]
@@ -6,7 +6,7 @@
             [leipzig.live :as live]
             [leipzig.live :refer [stop]]
             [overtone.inst.drum :as drums]
-            [riFF.instruments :as inst]))
+            [seven.instruments :as inst]))
 
 (def part (partial all :part))
 
@@ -20,8 +20,8 @@
 (defn silence [duration]
   (phrase [duration] [nil]))
 
-(def riFF
-  (let [seven (->> [0 0 2 0 -1 -2 -3 -1]
+(def seven
+  (let [riff (->> [0 0 2 0 -1 -2 -3 -1]
                    (phrase [1.5 0.5 0.75 0.75 0.5 2 2])
                    ;(vary #(but 4 5.5 (phrase [0.75 0.75 0.5] [-2 -1 -2]) %))
                    (times 4)
@@ -67,7 +67,7 @@
               [0 0 2 0 -1 -2 -3 -1])
       (where :pitch lower)
       (part :riff)
-      (times 4)
+      ;(times 4)
       ;(with nation-army)
       ;(with bass beat)
       ;(with sweet dreams)
@@ -80,8 +80,8 @@
   (map fx-distortion [0 1] [2 2] [0.18 0.14])
 
   (volume 0.8)
-  (do (stop) (-> riFF var live/jam))
-  (def riFF nil))
+  (do (stop) (-> seven var live/jam))
+  (def seven nil))
 
 ; Instrumentation
 (defonce x
@@ -132,7 +132,7 @@
                  (rlpf (line:kr 8000 100 dur) 0.7)
                  (* 2)
                  (pan2 pan)
-                 (* (env-gen (perc 0.00 0.9) (line:kr 1 0 dur) :action FREE))
+                 (* (env-gen (perc 0.0 0.9) (line:kr 1 0 dur) :action FREE))
                  (* vol))
         delayed (delay-l inst 0.01)
         reverbed (free-verb delayed :damp 0.4 :mix 0.1 :room 0.2)
