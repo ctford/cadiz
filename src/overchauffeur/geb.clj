@@ -72,7 +72,7 @@
 
 (comment
   (volume 0.9)
-  (-> geb var live/jam)
+  (do (stop) (-> geb var live/jam))
   (def geb nil))
 
 (comment

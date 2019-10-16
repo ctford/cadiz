@@ -28,5 +28,5 @@
          (tempo (bpm 120)))))
 
 (comment
-  (-> in-the-mood var jam)
+  (do (stop) (-> in-the-mood var jam))
   )

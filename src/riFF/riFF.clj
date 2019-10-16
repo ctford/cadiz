@@ -80,7 +80,7 @@
   (map fx-distortion [0 1] [2 2] [0.18 0.14])
 
   (volume 0.8)
-  (-> riFF var live/jam)
+  (do (stop) (-> riFF var live/jam))
   (def riFF nil))
 
 ; Instrumentation

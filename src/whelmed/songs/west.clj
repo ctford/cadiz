@@ -199,7 +199,7 @@
       (tempo (bpm 80)))))
 
 (comment
-  (->> west var live/jam)
+  (do (stop) (->> west var live/jam))
   (->> west-with-the-sun live/play)
 )
 

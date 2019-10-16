@@ -37,7 +37,7 @@
       (tempo (bpm 120)))))
 
 (comment
-  (jam (var in-the-mood) play-at)
+  (do (stop) (-> in-the-mood var jam))
   (def in-the-mood nil)
 )
 
