@@ -1,7 +1,7 @@
 (ns riFF.riFF
   (:require [overtone.live :refer :all :exclude [stop sharp flat]]
-            [leipzig.melody :refer :all]
             [leipzig.canon :refer [canon interval]]
+            [leipzig.melody :refer :all]
             [leipzig.scale :refer [high low raise lower sharp flat E B G minor major from]]
             [leipzig.live :as live]
             [leipzig.live :refer [stop]]
@@ -24,9 +24,9 @@
   (let [seven (->> [0 0 2 0 -1 -2 -3 -1]
                    (phrase [1.5 0.5 0.75 0.75 0.5 2 2])
                    ;(vary #(but 4 5.5 (phrase [0.75 0.75 0.5] [-2 -1 -2]) %))
-                   (times 8)
+                   (times 4)
                    ;(where :pitch raise)
-                   (where :pitch lower)
+                   ;(where :pitch lower)
                    (part :riff))
         nation-army (->> (phrase (reps [13 1/2] [2 3/4] [1 1/2])
                                  [0 4 4 3 3 2 2 1 1 0 0 -1 -1 0 0 0])
@@ -34,7 +34,6 @@
                          ;(phrase (repeat 1) (concat (range 4 -2 -1) [0 0]))
                          (then (silence 8))
                          (times 2)
-                         (after 32)
                          (part :melody))
         rise (->> (reps [8 [-2 2 5]] [8 [-1 3 6]])
                   (phrase (repeat 16 0.5))
@@ -58,31 +57,31 @@
                     (part :melody))
         bass (->> [0 -2 -3]
                   (phrase [4 2 2])
-                  ;(canon #(where :pitch raise %))
+                  (canon #(where :pitch raise %))
                   (where :pitch (comp lower lower))
-                  (times 2))
-        beat (->> (repeat 8 1)
-                  rhythm
-                  (having :part (cycle [:kick :snare])) (times 2))]
-    (->> (with seven nation-army)
-         (with (times 2 (with bass beat)))
-         ;(with sweet dreams)
-         (then rise)
-         (where :pitch (comp G minor))
-         (tempo (bpm 120)))))
-
-(comment
-  (volume 0.3)
-  (live/jam (var riFF))
-  (def riFF nil))
+                  (times 4))
+        beat (->> (rhythm (repeat 32 1))
+                  (having :part (cycle [:kick :snare])))]
+    (->>
+      (phrase [3/2 1/2 3/4 3/4 1/2 2 2]
+              [0 0 2 0 -1 -2 -3 -1])
+      (where :pitch lower)
+      (part :riff)
+      (times 4)
+      ;(with nation-army)
+      ;(with bass beat)
+      ;(with sweet dreams)
+      ;(then rise)
+      (where :pitch (comp G minor))
+      (tempo (bpm 120)))))
 
 (comment
   (map fx-chorus [0 1])
   (map fx-distortion [0 1] [2 2] [0.18 0.14])
 
-  (do (recording-start "geb.aiff")
-      (live/play geb))
-  (recording-stop))
+  (volume 0.8)
+  (-> riFF var live/jam)
+  (def riFF nil))
 
 ; Instrumentation
 (defonce x
@@ -90,7 +89,7 @@
     (out:kr out-bus (lf-noise1:kr freq))))
 (defonce random-walk (audio-bus))
 (defonce walk (walker random-walk :freq (* 1/7 0.75)))
-(def resonance (mul-add (in:kr random-walk) 2500 3000))
+(def resonance (mul-add (in:kr random-walk) 1500 3000))
 
 (definst sweetar [freq 110 dur 1.0 boost 5 vol 0.25 pan 0.0]
   (let [inst (-> (sin-osc freq)
@@ -142,11 +141,11 @@
 
 (defmethod live/play-note :default
   [{midi :pitch seconds :duration}]
-  (-> midi midi->hz (sweetar seconds)))
+  (-> midi midi->hz (sweetar seconds :boost 5)))
 
 (defmethod live/play-note :riff
   [{midi :pitch seconds :duration}]
-  (-> midi midi->hz (sweetar seconds :vol 0.5 :pan -1.5 :boost 109)))
+  (-> midi midi->hz (sweetar seconds :vol 0.5 :pan -0.5 :boost 10)))
 
 (defmethod live/play-note :bop
   [{midi :pitch seconds :duration}]
