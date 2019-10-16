@@ -28,7 +28,7 @@
          (then (with together decoration)))))
 
 (def ascii (partial where :pitch coding/ascii->midi))
-(defn initial [notes]
+(defn person [notes]
   (->> notes
        (where :pitch coding/midi->ascii)
        (all :part :sample)))
@@ -42,7 +42,7 @@
                                          (interleave [[0 2] [0 2] [0 3] [0 2]] (repeat -3)))
                                  (where :pitch (from %)))))
         whirl (->> (phrase [0.5 2 1] [9 7 4])
-                   (where :pitch (from 7))
+                   (where :pitch raise)
                    (times 4)
                    (with (->> (phrase (repeat 28 1/4) (cycle [2 3]))
                               (then (phrase (repeat 7 1) [2 2 2 2 2 1 1])))))
@@ -52,27 +52,27 @@
                   (having :part [:kick :snare :clap :kick :snare])
                   (times 4))
         steady (->> (phrase (repeat 28 1/2) (repeat 0))
-                    (having :part (->> (repeat 6 :click) (cons :clack) cycle)))
+                    (all :part :click))
         flat (->> (phrase (repeat 14 1) (repeat -21))
                   (having :part (repeat :kick)))]
     (->> []
-         ;(with bass riff)
+         (with bass riff)
          ;(with whirl #_hit)
-         ;(with #_beat steady #_flat)
+         (with #_beat steady #_flat)
          (times 2)
-         (with alt)
+         ;(with alt)
          (where :pitch (comp B minor))
-         #_(with (->> "GEB"
+         (with (->> "GEB"
                     (map coding/char->ascii)
                     (phrase bar-lengths)
-                    (canon ascii)
-                    #_(canon #(->> % ascii (canon initial)))
+                    ;(canon ascii)
+                    (canon #(->> % ascii (canon person)))
                     (times 2)))
          (tempo (bpm 90)))))
 
 (comment
   (volume 0.9)
-  (live/jam (var geb))
+  (-> geb var live/jam)
   (def geb nil))
 
 (comment
